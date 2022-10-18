@@ -66,6 +66,7 @@ namespace Digger
             for (var x = 0; x < Game.MapWidth; x++)
             for (var y = 0; y < Game.MapHeight; y++)
                 creatures[x, y] = new List<ICreature>();
+            
             foreach (var e in Animations)
             {
                 var x = e.TargetLogicalLocation.X;
