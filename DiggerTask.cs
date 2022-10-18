@@ -4,41 +4,37 @@ namespace Digger
 {
     public class Terrain : ICreature
     {
-        public CreatureCommand Act(int x, int y)
-        {
-            return new CreatureCommand();
-        }
+        public CreatureCommand Act(int x, int y) => new CreatureCommand();
 
-        public bool DeadInConflict(ICreature conflictedObject)
-        {
-            return true;
-        }
+        public bool DeadInConflict(ICreature conflictedObject) => true;
 
-        public int GetDrawingPriority()
-        {
-            return 1;
-        }
+        public int GetDrawingPriority() => 1;
 
-        public string GetImageFileName()
-        {
-            return "Terrain.png";
-        }
+        public string GetImageFileName() => "Terrain.png";
     }
 
     public class Player : ICreature
     {
         public CreatureCommand Act(int x, int y)
         {
-            if (Game.KeyPressed == Keys.Left && x > 0)
+            if (Game.KeyPressed == Keys.Left 
+                && x > 0 
+                && !(Game.Map[x-1,y] is Sack))
                 return new CreatureCommand() { DeltaX = -1, DeltaY = 0, TransformTo = null };
 
-            if (Game.KeyPressed == Keys.Right && x < Game.MapWidth - 1)
+            if (Game.KeyPressed == Keys.Right 
+                && x < Game.MapWidth - 1
+                && !(Game.Map[x + 1, y] is Sack))
                 return new CreatureCommand() { DeltaX = 1, DeltaY = 0, TransformTo = null };
 
-            if (Game.KeyPressed == Keys.Up && y > 0)
+            if (Game.KeyPressed == Keys.Up 
+                && y > 0
+                && !(Game.Map[x, y - 1] is Sack))
                 return new CreatureCommand() { DeltaX = 0, DeltaY = -1, TransformTo = null };
 
-            if (Game.KeyPressed == Keys.Down && y < Game.MapHeight - 1)
+            if (Game.KeyPressed == Keys.Down 
+                && y < Game.MapHeight - 1
+                && !(Game.Map[x, y + 1] is Sack))
                 return new CreatureCommand() { DeltaX = 0, DeltaY = 1, TransformTo = null };
 
             return new CreatureCommand();
@@ -46,26 +42,24 @@ namespace Digger
 
         public bool DeadInConflict(ICreature conflictedObject)
         {
+            if (conflictedObject is Sack)
+            {
+                Game.IsOver = true;
+                
+                return true;
+            }
+            
             return false;
         }
 
-        public int GetDrawingPriority()
-        {
-            return -1;
-        }
+        public int GetDrawingPriority() => -1;
 
-        public string GetImageFileName()
-        {
-            return "Digger.png";
-        }
+        public string GetImageFileName() => "Digger.png";
     }
 
     public class Gold : ICreature
     {
-        public CreatureCommand Act(int x, int y)
-        {
-            return new CreatureCommand() { DeltaX = 0, DeltaY = 0, TransformTo = null };
-        }
+        public CreatureCommand Act(int x, int y) => new CreatureCommand();
 
         public bool DeadInConflict(ICreature conflictedObject)
         {
@@ -78,43 +72,35 @@ namespace Digger
             return false;
         }
 
-        public int GetDrawingPriority()
-        {
-            return 1;
-        }
+        public int GetDrawingPriority() => 1;
 
-        public string GetImageFileName()
-        {
-            return "Gold.png";
-        }
+        public string GetImageFileName() => "Gold.png";
     }
 
     public class Sack : ICreature
     {
+        private int isGold = 0;
+
         public CreatureCommand Act(int x, int y)
         {
-            
-            if (y < Game.MapHeight -1 && Game.Map[x,y + 1] == null)
+            if (y < Game.MapHeight -1 && 
+                (Game.Map[x,y + 1] == null || (Game.Map[x, y + 1] is Player && isGold >= 1) ) )
             {
+                isGold++;
                 return new CreatureCommand() { DeltaX = 0, DeltaY = 1, TransformTo = null};
             }
 
+            if (isGold >= 2)
+                return new CreatureCommand() { DeltaX = 0, DeltaY = 0, TransformTo = new Gold() };
+            
+            isGold = 0;
             return new CreatureCommand();
         }
 
-        public bool DeadInConflict(ICreature conflictedObject)
-        {
-            return false;
-        }
+        public bool DeadInConflict(ICreature conflictedObject) => false;
 
-        public int GetDrawingPriority()
-        {
-            return 1;
-        }
+        public int GetDrawingPriority() => 1;
 
-        public string GetImageFileName()
-        {
-            return "Sack.png";
-        }
+        public string GetImageFileName() => "Sack.png";
     }
 }
