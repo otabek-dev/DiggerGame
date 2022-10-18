@@ -31,7 +31,7 @@ namespace Digger
                 bitmaps[e.Name] = (Bitmap) Image.FromFile(e.FullName);
 
             var timer = new Timer();
-            timer.Interval = 16;
+            timer.Interval = 15;
             timer.Tick += TimerTick;
             timer.Start();
         }

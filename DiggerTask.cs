@@ -42,7 +42,7 @@ namespace Digger
 
         public bool DeadInConflict(ICreature conflictedObject)
         {
-            if (conflictedObject is Sack)
+            if (conflictedObject is Sack || conflictedObject is Monster)
             {
                 Game.IsOver = true;
                 
@@ -68,11 +68,13 @@ namespace Digger
                 Game.Scores += 10;
                 return true;
             }
+            else if (conflictedObject is Monster)
+                return true;
 
             return false;
         }
 
-        public int GetDrawingPriority() => 1;
+        public int GetDrawingPriority() => 2;
 
         public string GetImageFileName() => "Gold.png";
     }
@@ -84,7 +86,7 @@ namespace Digger
         public CreatureCommand Act(int x, int y)
         {
             if (y < Game.MapHeight -1 && 
-                (Game.Map[x,y + 1] == null || (Game.Map[x, y + 1] is Player && isGold >= 1) ) )
+                (Game.Map[x,y + 1] == null || (Game.Map[x, y + 1] is Player || Game.Map[x, y + 1] is Monster && isGold >= 1) ) )
             {
                 isGold++;
                 return new CreatureCommand() { DeltaX = 0, DeltaY = 1, TransformTo = null};
@@ -99,8 +101,34 @@ namespace Digger
 
         public bool DeadInConflict(ICreature conflictedObject) => false;
 
-        public int GetDrawingPriority() => 1;
+        public int GetDrawingPriority() => -2;
 
         public string GetImageFileName() => "Sack.png";
+    }
+
+    public class Monster : ICreature
+    {
+        public CreatureCommand Act(int x, int y)
+        {
+            if (!Game.IsOver)
+            {
+                return new CreatureCommand();
+            }
+            else return new CreatureCommand();
+        }
+
+        public bool DeadInConflict(ICreature conflictedObject)
+        {
+            if (conflictedObject is Sack )
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public int GetDrawingPriority() => 1;
+
+        public string GetImageFileName() => "Monster.png";
     }
 }
