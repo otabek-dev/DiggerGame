@@ -11,14 +11,11 @@
                 Game.Scores += 10;
                 return true;
             }
-            else if (conflictedObject is Monster)
-                return true;
 
-            return false;
+            return conflictedObject is Monster;
         }
 
         public int GetDrawingPriority() => 2;
-
         public string GetImageFileName() => "Gold.png";
     }
 }

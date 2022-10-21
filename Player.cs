@@ -11,58 +11,45 @@ namespace Digger
         {
             for (var x = 0; x < Game.MapWidth; x++)
                 for (var y = 0; y < Game.MapHeight; y++)
-                {
-                    var creature = Game.Map[x, y];
-                    if (creature is Player)
+                    if (Game.Map[x, y] is Player)
                     {
                         X = x;
                         Y = y;
                         return true;
                     }
-                }
-
+                
             return false;
         }
-
-        public CreatureCommand Act(int x, int y)
+        public CreatureCommand MoveTo(int x, int y, int moveX, int moveY)
         {
-            X = x;
-            Y = y;
-
-            if (Game.KeyPressed == Keys.Left 
-                && x > 0 
-                && !(Game.Map[x-1,y] is Sack))
-                return new CreatureCommand() { DeltaX = -1, DeltaY = 0, TransformTo = null };
-
-            if (Game.KeyPressed == Keys.Right 
-                && x < Game.MapWidth - 1
-                && !(Game.Map[x + 1, y] is Sack))
-                return new CreatureCommand() { DeltaX = 1, DeltaY = 0, TransformTo = null };
-
-            if (Game.KeyPressed == Keys.Up 
-                && y > 0
-                && !(Game.Map[x, y - 1] is Sack))
-                return new CreatureCommand() { DeltaX = 0, DeltaY = -1, TransformTo = null };
-
-            if (Game.KeyPressed == Keys.Down 
-                && y < Game.MapHeight - 1
-                && !(Game.Map[x, y + 1] is Sack))
-                return new CreatureCommand() { DeltaX = 0, DeltaY = 1, TransformTo = null };
+            if (x + moveX >= 0 && x + moveX < Game.MapWidth
+                && y + moveY >= 0 && y + moveY < Game.MapHeight
+                && !(Game.Map[x + moveX, y + moveY] is Sack))
+                return new CreatureCommand() { DeltaX = moveX, DeltaY = moveY, TransformTo = null };
 
             return new CreatureCommand();
         }
 
-        public bool DeadInConflict(ICreature conflictedObject)
+        public CreatureCommand Act(int x, int y)
         {
-            if (conflictedObject is Sack || conflictedObject is Monster)
-            {
-                Game.IsOver = true;
-                return true;
-            }
-            
-            return false;
+            if (Game.KeyPressed == Keys.Left)
+                return MoveTo(x, y, -1, 0);
+
+            if (Game.KeyPressed == Keys.Right)
+                return MoveTo(x, y, 1, 0);
+
+            if (Game.KeyPressed == Keys.Up)
+                return MoveTo(x, y, 0, -1);
+
+            if (Game.KeyPressed == Keys.Down)
+                return MoveTo(x, y, 0, 1);
+
+            return new CreatureCommand();
         }
 
+        public bool DeadInConflict(ICreature conflictedObject) => 
+            conflictedObject is Sack || conflictedObject is Monster;
+       
         public int GetDrawingPriority() => -1;
 
         public string GetImageFileName() => "Digger.png";
