@@ -55,9 +55,7 @@ S TTST  TG
    
  P 
  T ";
-        private const string testMap2 = @"
-P M";
-
+        
         public static ICreature[,] Map;
         public static int Scores;
         public static bool IsOver;

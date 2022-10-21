@@ -7,7 +7,7 @@ namespace Digger
         public static int X { get; protected set; }
         public static int Y { get; protected set; }
 
-        public static bool SetPlayerСoordinates()
+        public static bool IsPlayerAlive()
         {
             for (var x = 0; x < Game.MapWidth; x++)
                 for (var y = 0; y < Game.MapHeight; y++)
@@ -20,8 +20,10 @@ namespace Digger
                         return true;
                     }
                 }
+
             return false;
         }
+
         public CreatureCommand Act(int x, int y)
         {
             X = x;
@@ -55,7 +57,6 @@ namespace Digger
             if (conflictedObject is Sack || conflictedObject is Monster)
             {
                 Game.IsOver = true;
-                
                 return true;
             }
             
