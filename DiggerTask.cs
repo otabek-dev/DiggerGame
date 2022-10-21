@@ -15,8 +15,29 @@ namespace Digger
 
     public class Player : ICreature
     {
+        public static int X { get; protected set; }
+        public static int Y { get; protected set; }
+
+        public static bool SetPlayerСoordinates()
+        {
+            for (var x = 0; x < Game.MapWidth; x++)
+                for (var y = 0; y < Game.MapHeight; y++)
+                {
+                    var creature = Game.Map[x, y];
+                    if (creature is Player)
+                    {
+                        X = x;
+                        Y = y;
+                        return true;
+                    }
+                }
+            return false;
+        }
         public CreatureCommand Act(int x, int y)
         {
+            X = x;
+            Y = y;
+
             if (Game.KeyPressed == Keys.Left 
                 && x > 0 
                 && !(Game.Map[x-1,y] is Sack))
@@ -110,9 +131,45 @@ namespace Digger
     {
         public CreatureCommand Act(int x, int y)
         {
-            if (!Game.IsOver)
+            if (Player.SetPlayerСoordinates())
             {
-                return new CreatureCommand();
+                
+
+                // Left
+                if (Player.X - x <= -1
+                    && x > 0
+                    && !(Game.Map[x - 1, y] is Sack)
+                    && !(Game.Map[x - 1, y] is Terrain)
+                    && !(Game.Map[x - 1, y] is Monster)
+                    )
+                    return new CreatureCommand() { DeltaX = -1, DeltaY = 0, TransformTo = null };
+
+                // Right
+                if (Player.X - x >= 1
+                    && x < Game.MapWidth - 1
+                    && !(Game.Map[x + 1, y] is Sack)
+                    && !(Game.Map[x + 1, y] is Terrain)
+                    && !(Game.Map[x + 1, y] is Monster)
+                    )
+                    return new CreatureCommand() { DeltaX = 1, DeltaY = 0, TransformTo = null };
+                
+                // top
+                if (Player.Y - y <= -1
+                    && y > 0
+                    && !(Game.Map[x, y - 1] is Sack)
+                    && !(Game.Map[x, y - 1] is Terrain)
+                    && !(Game.Map[x, y - 1] is Monster)
+                    )
+                    return new CreatureCommand() { DeltaX = 0, DeltaY = -1, TransformTo = null };
+                
+                //down
+                if (Player.Y - y >= 1
+                    && y < Game.MapHeight - 1
+                    && !(Game.Map[x, y + 1] is Sack)
+                    && !(Game.Map[x, y + 1] is Terrain)
+                    && !(Game.Map[x, y + 1] is Monster)
+                    )
+                    return new CreatureCommand() { DeltaX = 0, DeltaY = 1, TransformTo = null };
             }
             
             return new CreatureCommand();
@@ -120,7 +177,7 @@ namespace Digger
 
         public bool DeadInConflict(ICreature conflictedObject)
         {
-            if (conflictedObject is Sack )
+            if (conflictedObject is Sack || conflictedObject is Monster)
             {
                 return true;
             }
@@ -133,15 +190,3 @@ namespace Digger
         public string GetImageFileName() => "Monster.png";
     }
 }
-
-/*
-* Если на карте есть диггер, монстр двигается в его сторону по горизонтали или вертикали. Можете написать поиск кратчайшего пути к диггеру, но это не обязательно.
-* Монстр не может ходить сквозь землю или мешки.
-* Монстр не должен начинать ходить в клетку, где уже есть другой монстр.
-* Если два или более монстров сходили в одну и ту же клетку, они все умирают. Если в этой клетке был диггер — он тоже умирает.
-* - Если на карте нет диггера, монстр стоит на месте.
-* - Если после хода монстр и диггер оказались в одной клетке, диггер умирает.
-* - Если монстр оказывается в клетке с золотом, золото исчезает.
-* - Мешок может лежать на монстре.
-* - Падающий на монстра мешок убивает монстра.
-*/

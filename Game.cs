@@ -39,22 +39,24 @@ S TTST  TG
  TGST MTTT
  T  TMTTTT";
         private const string testMap = @"
-T
- 
-M
- 
- 
- 
- 
- 
-G
- 
- 
- 
- 
- 
-
-T";
+ T 
+   
+ M 
+   
+   
+   
+   
+   
+ G 
+   
+   
+   
+   
+   
+ P 
+ T ";
+        private const string testMap2 = @"
+P M";
 
         public static ICreature[,] Map;
         public static int Scores;
