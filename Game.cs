@@ -38,6 +38,23 @@ TSTSTTMTTT
 S TTST  TG
  TGST MTTT
  T  TMTTTT";
+        private const string testMap = @"
+T
+ 
+M
+ 
+ 
+ 
+ 
+ 
+G
+ 
+ 
+ 
+ 
+ 
+
+T";
 
         public static ICreature[,] Map;
         public static int Scores;
