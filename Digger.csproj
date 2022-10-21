@@ -54,7 +54,11 @@
     <Compile Include="Architecture\GameState.cs" />
     <Compile Include="Architecture\CreatureMapCreator.cs" />
     <Compile Include="Game.cs" />
-    <Compile Include="DiggerTask.cs" />
+    <Compile Include="Gold.cs" />
+    <Compile Include="Monster.cs" />
+    <Compile Include="Player.cs" />
+    <Compile Include="Sack.cs" />
+    <Compile Include="Terrain.cs" />
     <Compile Include="Architecture\ICreature.cs" />
     <Compile Include="Architecture\CreatureAnimation.cs" />
     <Compile Include="Architecture\DiggerWindow.cs">
